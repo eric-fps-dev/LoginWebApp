@@ -1,0 +1,19 @@
+Index: Jenkinsfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>pipeline {\r\n    agent any\r\n    tools {\r\n        maven 'localMaven'\r\n    }\r\n\r\n    parameters {\r\n         string(name: 'tomcat_stag', defaultValue: '35.154.81.229', description: 'Tomcat Staging Server')\r\n    }\r\n\r\nstages{\r\n        stage('Build'){\r\n            steps {\r\n                sh 'mvn clean package'\r\n            }\r\n            post {\r\n                success {\r\n                    echo 'Archiving the artifacts'\r\n                    archiveArtifacts artifacts: '**/*.war'\r\n                }\r\n            }\r\n        }\r\n\r\n        stage ('Deployments'){\r\n                stage ('Deploy to Staging Server'){\r\n                    steps {\r\n                        sh \"scp **/*.war jenkins@${params.tomcat_stag}:/usr/share/tomcat/webapps\"\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Jenkinsfile b/Jenkinsfile
+--- a/Jenkinsfile	
++++ b/Jenkinsfile	
+@@ -1,7 +1,7 @@
+ pipeline {
+     agent any
+     tools {
+-        maven 'localMaven'
++        maven 'maven-3-9-8'
+     }
+ 
+     parameters {
